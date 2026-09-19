@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireTop Ethiopia</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #090909;
+  color: white;
+  min-height: 100vh;
+}
+
+header {
+  padding: 22px 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #252525;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffb000;
+}
+
+.admin-link {
+  color: #aaa;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.admin-link:hover {
+  color: #ffb000;
+}
+
+.hero {
+  text-align: center;
+  padding: 60px 20px 35px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  color: #ffb000;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  color: #aaa;
+}
+
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.section-title {
+  margin: 35px 0 20px;
+  font-size: 24px;
+}
+
+.packages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.package {
+  background: #151515;
+  border: 1px solid #292929;
+  padding: 25px 15px;
+  text-align: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.package:hover,
+.package.selected {
+  border-color: #ffb000;
+  transform: translateY(-3px);
+}
+
+.diamond {
+  font-size: 23px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.price {
+  color: #ffb000;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.form-box,
+.track-box {
+  background: #151515;
+  border: 1px solid #292929;
+  padding: 25px;
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-radius: 7px;
+  color: white;
+  outline: none;
+}
+
+input:focus {
+  border-color: #ffb000;
+}
+
+.payment {
+  background: #201a0c;
+  border: 1px solid #6d5100;
+  padding: 18px;
+  margin: 20px 0;
+  border-radius: 10px;
+}
+
+.payment strong {
+  color: #ffb000;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 7px;
+  background: #ffb000;
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #ffc52e;
+}
+
+.secondary {
+  background: #292929;
+  color: white;
+}
+
+.secondary:hover {
+  background: #383838;
+}
+
+#message,
+#trackResult {
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 7px;
+  display: none;
+  background: #202020;
+}
+
+footer {
+  text-align: center;
+  color: #666;
+  padding: 40px 20px;
+}
+
+@media(max-width:600px) {
+  .hero h1 {
+    font-size: 32px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">FIRETOP</div>
+  <a href="/admin.html" class="admin-link">Admin</a>
+</header>
+
+<section class="hero">
+  <h1>Free Fire Top Up</h1>
+  <p>Fast and simple Free Fire diamonds in Ethiopia</p>
+</section>
+
+<div class="container">
+
+  <h2 class="section-title">Choose Diamonds</h2>
+
+  <div class="packages">
+
+    <div class="package" data-package="100 Diamonds" data-price="65">
+      <div class="diamond">💎 100</div>
+      <div class="price">65 ETB</div>
+    </div>
+
+    <div class="package" data-package="310 Diamonds" data-price="190">
+      <div class="diamond">💎 310</div>
+      <div class="price">190 ETB</div>
+    </div>
+
+    <div class="package" data-package="520 Diamonds" data-price="310">
+      <div class="diamond">💎 520</div>
+      <div class="price">310 ETB</div>
+    </div>
+
+    <div class="package" data-package="1060 Diamonds" data-price="620">
+      <div class="diamond">💎 1060</div>
+      <div class="price">620 ETB</div>
+    </div>
+
+    <div class="package" data-package="2180 Diamonds" data-price="1250">
+      <div class="diamond">💎 2180</div>
+      <div class="price">1250 ETB</div>
+    </div>
+
+    <div class="package" data-package="5600 Diamonds" data-price="3100">
+      <div class="diamond">💎 5600</div>
+      <div class="price">3100 ETB</div>
+    </div>
+
+    <div class="package" data-package="11500 Diamonds" data-price="6200">
+      <div class="diamond">💎 11500</div>
+      <div class="price">6200 ETB</div>
+    </div>
+
+    <div class="package" data-package="24000 Diamonds" data-price="12500">
+      <div class="diamond">💎 24000</div>
+      <div class="price">12500 ETB</div>
+    </div>
+
+  </div>
+
+  <div class="form-box">
+
+    <h2>Order Details</h2>
+
+    <input id="playerId" type="text" placeholder="Free Fire Player ID">
+    <input id="playerName" type="text" placeholder="Player Name">
+    <input id="phone" type="tel" placeholder="Phone Number">
+
+    <div class="payment">
+      <div>Selected Package: <strong id="selectedPackage">None</strong></div>
+      <br>
+      <div>Price: <strong id="selectedPrice">0 ETB</strong></div>
+      <br>
+      <div>Telebirr Number: <strong>+251 911 884 892</strong></div>
+      <br>
+      <small>Send the exact amount using Telebirr. Your payment will be manually verified.</small>
+    </div>
+
+    <button type="button" onclick="openTelebirr()">Open Telebirr</button>
+    <button type="button" onclick="submitOrder()">I Have Paid</button>
+
+    <div id="message"></div>
+
+  </div>
+
+  <div class="track-box">
+
+    <h2>Track Your Order</h2>
+
+    <input id="trackOrderId" type="text" placeholder="Order ID">
+    <input id="trackPhone" type="tel" placeholder="Phone Number">
+
+    <button type="button" onclick="trackOrder()">Check Order Status</button>
+
+    <div id="trackResult"></div>
+
+  </div>
+
+</div>
+
+<footer>
+  FireTop Ethiopia © 2026
+</footer>
+
+<script>
+
+let selectedPackage = "";
+let selectedPrice = 0;
+
+document.querySelectorAll(".package").forEach(card => {
+
+  card.addEventListener("click", () => {
+
+    document.querySelectorAll(".package").forEach(p => {
+      p.classList.remove("selected");
+    });
+
+    card.classList.add("selected");
+
+    selectedPackage = card.dataset.package;
+    selectedPrice = Number(card.dataset.price);
+
+    document.getElementById("selectedPackage").textContent =
+      selectedPackage;
+
+    document.getElementById("selectedPrice").textContent =
+      selectedPrice + " ETB";
+  });
+
+});
+
+function showMessage(text) {
+  const box = document.getElementById("message");
+
+  box.style.display = "block";
+  box.textContent = text;
+}
+
+function openTelebirr() {
+
+  showMessage(
+    "Please open your Telebirr app and send " +
+    selectedPrice +
+    " ETB to +251 911 884 892."
+  );
+
+}
+
+async function submitOrder() {
+
+  const playerId = document.getElementById("playerId").value.trim();
+  const playerName = document.getElementById("playerName").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+
+  if (!selectedPackage) {
+    showMessage("Please select a diamond package.");
+    return;
+  }
+
+  if (!playerId || !playerName || !phone) {
+    showMessage("Please complete all your information.");
+    return;
+  }
+
+  try {
+
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        playerId,
+        playerName,
+        phone,
+        package: selectedPackage,
+        amount: selectedPrice
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showMessage(data.error || "Something went wrong.");
+      return;
+    }
+
+    showMessage(
+      "Order submitted successfully! Your Order ID is " +
+      data.orderId +
+      ". Keep this ID to track your order."
+    );
+
+    document.getElementById("trackOrderId").value =
+      data.orderId;
+
+    document.getElementById("trackPhone").value =
+      phone;
+
+  } catch (error) {
+
+    showMessage(
+      "Could not connect to the server."
+    );
+
+  }
+
+}
+
+async function trackOrder() {
+
+  const orderId =
+    document.getElementById("trackOrderId").value.trim();
+
+  const phone =
+    document.getElementById("trackPhone").value.trim();
+
+  const result =
+    document.getElementById("trackResult");
+
+  if (!orderId || !phone) {
+    result.style.display = "block";
+    result.textContent =
+      "Please enter your Order ID and phone number.";
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      "/api/order-status?orderId=" +
+      encodeURIComponent(orderId) +
+      "&phone=" +
+      encodeURIComponent(phone)
+    );
+
+    const data = await response.json();
+
+    result.style.display = "block";
+
+    if (!response.ok) {
+      result.textContent =
+        data.error || "Order not found.";
+      return;
+    }
+
+    result.innerHTML = `
+      <strong>Order:</strong> ${data.orderId}<br><br>
+      <strong>Package:</strong> ${data.package}<br>
+      <strong>Amount:</strong> ${data.amount} ETB<br>
+      <strong>Payment:</strong> ${data.paymentStatus}<br>
+      <strong>Status:</strong> ${data.orderStatus}<br><br>
+      ${data.message}
+    `;
+
+  } catch (error) {
+
+    result.style.display = "block";
+    result.textContent =
+      "Could not connect to the server.";
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>

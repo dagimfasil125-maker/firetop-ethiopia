@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireTop Admin</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #090909;
+  color: white;
+}
+
+.container {
+  width: 94%;
+  max-width: 1500px;
+  margin: auto;
+}
+
+header {
+  padding: 25px 0;
+  border-bottom: 1px solid #292929;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: #ffb000;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+button {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout {
+  background: #292929;
+  color: white;
+}
+
+.login-box {
+  width: 90%;
+  max-width: 400px;
+  margin: 100px auto;
+  background: #151515;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.login-box h1 {
+  color: #ffb000;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  background: #0d0d0d;
+  border: 1px solid #333;
+  color: white;
+  border-radius: 6px;
+}
+
+.login-btn {
+  width: 100%;
+  background: #ffb000;
+  margin-top: 10px;
+}
+
+#error {
+  color: #ff5555;
+  margin-top: 15px;
+  text-align: center;
+}
+
+#dashboard {
+  display: none;
+}
+
+.title {
+  padding: 30px 0;
+}
+
+.notice {
+  background: #201a0c;
+  border: 1px solid #6d5100;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.refresh {
+  background: #292929;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.table-box {
+  background: #151515;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1100px;
+}
+
+th,
+td {
+  padding: 14px;
+  border-bottom: 1px solid #292929;
+  text-align: left;
+  font-size: 14px;
+}
+
+th {
+  color: #ffb000;
+  background: #101010;
+}
+
+.status {
+  padding: 7px 10px;
+  border-radius: 5px;
+  background: #292929;
+  display: inline-block;
+}
+
+.actions button {
+  margin: 2px;
+}
+
+.verify {
+  background: #ffb000;
+  color: #111;
+}
+
+.complete {
+  background: #37b24d;
+  color: white;
+}
+
+.cancel {
+  background: #d63333;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div id="login">
+
+  <div class="login-box">
+
+    <h1>FireTop Admin</h1>
+
+    <input id="username" type="text" placeholder="Username">
+
+    <input id="password" type="password" placeholder="Password">
+
+    <button class="login-btn" onclick="login()">
+      Login
+    </button>
+
+    <div id="error"></div>
+
+  </div>
+
+</div>
+
+
+<div id="dashboard">
+
+  <div class="container">
+
+    <header>
+
+      <div class="logo">
+        FIRETOP ADMIN
+      </div>
+
+      <button class="logout" onclick="logout()">
+        Logout
+      </button>
+
+    </header>
+
+
+    <div class="title">
+
+      <h1>Orders Dashboard</h1>
+
+      <p style="color:#777;margin-top:8px;">
+        Manage customer Free Fire top-up orders.
+      </p>
+
+    </div>
+
+
+    <div class="notice">
+
+      <strong>Order workflow:</strong>
+
+      Pending Payment →
+      Verify Payment →
+      Processing →
+      Complete
+
+      <br>
+
+      You can also cancel an order if payment cannot be confirmed.
+
+    </div>
+
+
+    <button class="refresh" onclick="loadOrders()">
+      Refresh Orders
+    </button>
+
+
+    <div class="table-box">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Phone</th>
+            <th>Player ID</th>
+            <th>Package</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="orders"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+let token = localStorage.getItem("firetop_admin_token");
+
+if (token) {
+  showDashboard();
+  loadOrders();
+}
+
+
+async function login() {
+
+  const username =
+    document.getElementById("username").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const error =
+    document.getElementById("error");
+
+  error.textContent = "";
+
+  try {
+
+    const response = await fetch("/api/login", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        username,
+        password
+      })
+
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+
+      error.textContent =
+        data.error || "Login failed.";
+
+      return;
+    }
+
+    token = data.token;
+
+    localStorage.setItem(
+      "firetop_admin_token",
+      token
+    );
+
+    showDashboard();
+
+    loadOrders();
+
+  } catch {
+
+    error.textContent =
+      "Could not connect to server.";
+
+  }
+}
+
+
+function showDashboard() {
+
+  document.getElementById("login").style.display =
+    "none";
+
+  document.getElementById("dashboard").style.display =
+    "block";
+}
+
+
+async function loadOrders() {
+
+  try {
+
+    const response = await fetch("/api/orders", {
+
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+
+    });
+
+    if (response.status === 401) {
+
+      logout();
+
+      return;
+    }
+
+    const orders = await response.json();
+
+    const tbody =
+      document.getElementById("orders");
+
+    tbody.innerHTML = "";
+
+
+    if (!orders.length) {
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="10" style="text-align:center;padding:30px;">
+            No orders yet.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    orders.forEach(order => {
+
+      /*
+        OLD ORDERS:
+        If they don't have status fields,
+        treat them as Pending Payment.
+      */
+
+      const paymentStatus =
+        order.paymentStatus || "Pending";
+
+      const orderStatus =
+        order.orderStatus || "Pending Payment";
+
+
+      const row =
+        document.createElement("tr");
+
+
+      row.innerHTML = `
+
+        <td>
+          <strong>${escapeHtml(order.orderId)}</strong>
+        </td>
+
+        <td>
+          ${escapeHtml(order.playerName)}
+        </td>
+
+        <td>
+          ${escapeHtml(order.phone)}
+        </td>
+
+        <td>
+          ${escapeHtml(order.playerId)}
+        </td>
+
+        <td>
+          ${escapeHtml(order.package)}
+        </td>
+
+        <td>
+          ${escapeHtml(String(order.amount))} ETB
+        </td>
+
+        <td>
+          <span class="status">
+            ${escapeHtml(paymentStatus)}
+          </span>
+        </td>
+
+        <td>
+          <span class="status">
+            ${escapeHtml(orderStatus)}
+          </span>
+        </td>
+
+        <td>
+          ${new Date(order.createdAt).toLocaleString()}
+        </td>
+
+        <td class="actions">
+
+          ${getActions(order, orderStatus)}
+
+        </td>
+
+      `;
+
+      tbody.appendChild(row);
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+
+function getActions(order, status) {
+
+  if (status === "Pending Payment") {
+
+    return `
+
+      <button
+        class="verify"
+        onclick="changeStatus('${order.orderId}', 'verify')"
+      >
+        Verify Payment
+      </button>
+
+      <button
+        class="cancel"
+        onclick="changeStatus('${order.orderId}', 'cancel')"
+      >
+        Cancel
+      </button>
+
+    `;
+
+  }
+
+
+  if (status === "Processing") {
+
+    return `
+
+      <button
+        class="complete"
+        onclick="changeStatus('${order.orderId}', 'complete')"
+      >
+        Complete
+      </button>
+
+      <button
+        class="cancel"
+        onclick="changeStatus('${order.orderId}', 'cancel')"
+      >
+        Cancel
+      </button>
+
+    `;
+
+  }
+
+
+  return "-";
+}
+
+
+async function changeStatus(orderId, action) {
+
+  let question = "";
+
+  if (action === "verify") {
+    question = "Verify this payment?";
+  }
+
+  if (action === "complete") {
+    question = "Mark this order as completed?";
+  }
+
+  if (action === "cancel") {
+    question = "Cancel this order?";
+  }
+
+  if (!confirm(question)) {
+    return;
+  }
+
+
+  try {
+
+    const response = await fetch(
+      "/api/orders/" +
+      encodeURIComponent(orderId) +
+      "/status",
+      {
+
+        method: "PATCH",
+
+        headers: {
+
+          "Content-Type": "application/json",
+
+          "Authorization":
+            "Bearer " + token
+
+        },
+
+        body: JSON.stringify({
+          action
+        })
+
+      }
+    );
+
+
+    if (response.status === 401) {
+
+      logout();
+
+      return;
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      alert(
+        data.error ||
+        "Could not update order."
+      );
+
+      return;
+    }
+
+
+    loadOrders();
+
+
+  } catch {
+
+    alert(
+      "Could not connect to server."
+    );
+
+  }
+}
+
+
+async function logout() {
+
+  try {
+
+    if (token) {
+
+      await fetch("/api/logout", {
+
+        method: "POST",
+
+        headers: {
+          "Authorization":
+            "Bearer " + token
+        }
+
+      });
+
+    }
+
+  } catch {}
+
+
+  localStorage.removeItem(
+    "firetop_admin_token"
+  );
+
+  token = null;
+
+  document.getElementById("dashboard").style.display =
+    "none";
+
+  document.getElementById("login").style.display =
+    "block";
+}
+
+
+function escapeHtml(value) {
+
+  return String(value)
+
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
